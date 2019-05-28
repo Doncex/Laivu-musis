@@ -1,0 +1,242 @@
+#include <iostream>
+#include <stdlib.h>
+#include <string>
+#include <time.h>
+#include <windows.h>
+#include <vector>
+using namespace std;
+
+class Laivu_musis
+{
+private:
+	const static int eil = 5;
+	const static int stulp = 5;
+	int Visi_laivai;
+	int matrica[eil][stulp];
+public:
+	Laivu_musis()
+	{
+		Visi_laivai = 10;
+	}
+
+	void Tuscias_laukas() // tuscia matrica
+	{
+		for (int i = 0; i < eil; i++)
+		{
+			for (int j = 0; j < stulp; j++)
+			{
+				matrica[i][j] = 0;
+			}
+		}
+	}
+
+	void Statyti_laivus()
+	{
+		int laivai = 0;
+		while (laivai < Visi_laivai)
+		{
+			int x = rand() % 5;
+			int y = rand() % 5;
+
+			if (matrica[x][y] != 1)
+			{
+				laivai++;
+				matrica[x][y] = 1; // 1 = laivas
+			}
+
+		}
+
+	}
+	bool Puolimas(int x, int y) // funkcija tikrina ar matricoje yra laivas
+	{
+		if (matrica[x][y] == 1)
+		{
+		    matrica[x][y]=2;
+			return true;
+		}
+		return false;
+	}
+};
+
+
+
+class Musio_laukas
+{
+private:
+	const static int eil = 5;
+	const static int stulp = 5;
+	char laukas[eil][stulp];
+	int matrica2[eil][stulp];
+public:
+    Musio_laukas(){}
+	~Musio_laukas(){cout << "Zaidimo pabaiga!!!!" << endl;}
+	void Statyti_lauka()
+	{
+		for (int x = 0; x < eil; x++)
+		{
+			for (int y = 0; y < stulp; y++)
+			{
+				laukas[x][y] = '-';
+			}
+		}
+	}
+
+	void Atnaujinti_lauka(bool i, int a, int b)
+	{
+		int x=a;
+		int y=b;
+
+		if (i == true)
+		{
+			laukas[x][y] = 'X';
+		}
+		else
+		{
+			laukas[x][y] = 'O';
+		}
+	}
+
+	void Parodyti_lauka()
+	{
+		int tsg = 0;
+
+        vector <int> A;
+        A.push_back(0);
+        A.push_back(1);
+        A.push_back(2);
+        A.push_back(3);
+        A.push_back(4);
+
+        cout<<"  ";
+
+        for(int i=0;i<A.size();i++)
+        {
+            cout<<A[i]<<" ";
+        }
+        cout<<endl;
+		for (int x = 0; x < eil; x++) {
+			cout << tsg << " ";
+			tsg++;
+			for (int y = 0; y < stulp; y++) {
+				cout << laukas[x][y] << " ";
+			}
+			cout << endl;
+		}
+	}
+
+	bool Tikrinti_lauka(int i, int j) // reikalinga kad kompas nesaudytu i tas pacias koordinates
+	{
+                if(matrica2[i][j]!=99){
+                    matrica2[i][j]=99;
+                    return true;
+                }
+            else return false;
+
+	}
+};
+
+
+
+int main()
+{
+
+        int koordinate1, koordinate2;
+		int pataikyti = 0;
+		int liko = 10;
+
+		int Kompiuterio_pataikyti = 0;
+		int Kompiuterio_liko = 10;
+
+		bool Zaidejas_pataike;
+		bool Kompiuteris_pataike;
+
+        int Kompiuterio_koordinate1=2;
+        int Kompiuterio_koordinate2=2;
+
+		srand((unsigned)time(NULL));
+
+		Musio_laukas Zaidejo_laukas;
+		Musio_laukas Kompiuterio_laukas;
+
+		Zaidejo_laukas.Statyti_lauka();
+		Kompiuterio_laukas.Statyti_lauka();
+
+		cout << "Zaidejo laukas: " << endl;
+		Zaidejo_laukas.Parodyti_lauka();
+		cout << "Kompiuterio laukas: " << endl;
+		Kompiuterio_laukas.Parodyti_lauka();
+
+		Laivu_musis zaidejas;
+		Laivu_musis kompiuteris;
+
+		zaidejas.Tuscias_laukas();
+		zaidejas.Statyti_laivus();
+
+		kompiuteris.Tuscias_laukas();
+		kompiuteris.Statyti_laivus();
+
+		while (pataikyti < 10 || Kompiuterio_pataikyti < 10)
+		{
+if (Kompiuterio_pataikyti == 10 || pataikyti == 10)
+				{
+					break;
+				}
+			while(Kompiuterio_laukas.Tikrinti_lauka(Kompiuterio_koordinate1,Kompiuterio_koordinate2)!=true){
+			Kompiuterio_koordinate1 = rand() % 5;
+			Kompiuterio_koordinate2 = rand() % 5;
+			}
+
+			if (kompiuteris.Puolimas(Kompiuterio_koordinate1, Kompiuterio_koordinate2))
+			{
+				Kompiuteris_pataike = true;
+				Kompiuterio_pataikyti++;
+				Kompiuterio_liko--;
+				cout << "Kompiuteris susprogdino jusu laiva koordinatese: " << "(" << Kompiuterio_koordinate1 << ", " << Kompiuterio_koordinate2 << ")" << endl;
+			}
+			else
+			{
+				Kompiuteris_pataike = false;
+				cout << "Kompiuteris nepataike i jusu laiva" << endl;
+			}
+
+				cout << "Irasykite koordinates x ir y: ";
+
+				cin >> koordinate1 >> koordinate2;
+
+				while (cin.fail()) // jeigu irasomas ne skaicius
+				{
+					cin.clear();
+					cin.ignore();
+					cout << "Irasykite koordinates is naujo: "; cin >> koordinate1 >> koordinate2;
+				}
+
+			if (zaidejas.Puolimas(koordinate1, koordinate2))
+			{
+				Zaidejas_pataike = true;
+				pataikyti++;
+				liko--;
+				cout << "Susprogdinti laivai: " << pataikyti << " Liko susprogdinti: " << liko <<endl;
+			}
+			else
+			{
+				Zaidejas_pataike = false;
+				cout << "Nepataikete i laiva" << endl;
+			}
+
+			Sleep(1500);
+			system("CLS");
+
+			Zaidejo_laukas.Atnaujinti_lauka(Zaidejas_pataike, koordinate1, koordinate2);
+			Kompiuterio_laukas.Atnaujinti_lauka(Kompiuteris_pataike, Kompiuterio_koordinate1, Kompiuterio_koordinate2);
+
+			cout << "Zaidejo laukas: " << endl;
+			Zaidejo_laukas.Parodyti_lauka();
+			cout << "Kompiuterio laukas" << endl;
+			Kompiuterio_laukas.Parodyti_lauka();
+
+		}
+		if(pataikyti==10&&Kompiuterio_pataikyti==10) cout<<"lygiasios!!"<<endl;
+		else if(Kompiuterio_pataikyti==10) cout<<"deja jus pralaimejote!!!"<<endl;
+		else if(pataikyti==10) cout<<"sveikiname jus laimejote!!"<<endl;
+	return 0;
+}
